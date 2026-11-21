@@ -186,15 +186,8 @@ Interactive API documentation is available while the backend runs at **http://lo
 
 ## 7. More documentation
 
-* [docs/I-ITSM_PROJECT_REPORT.pdf](docs/I-ITSM_PROJECT_REPORT.pdf): **the report to submit** (group 93, about 80 pages). It follows the evaluation rubric, with the technology selection, design, implementation, error handling, security, persistence, the 30 documented test cases and 15 screenshots of the running system (source: [docs/I-ITSM_PROJECT_REPORT.md](docs/I-ITSM_PROJECT_REPORT.md), rebuilt with `python docs/tools/build_master.py`; the repository and video links are set in `docs/report_links.txt`).
-* [docs/FINAL_PROJECT_REPORT.pdf](docs/FINAL_PROJECT_REPORT.pdf): the longer, detailed project report that the submission report was condensed from (editable source: [docs/FINAL_PROJECT_REPORT.md](docs/FINAL_PROJECT_REPORT.md)). It contains the problem analysis, requirements, architecture, design, implementation, testing and conclusions.
-* [docs/TECHNOLOGY_SELECTION_REPORT.pdf](docs/TECHNOLOGY_SELECTION_REPORT.pdf): detailed companion report on the technology choices, error handling, security, persistence and a ten-column test-case table (editable source: [docs/TECHNOLOGY_SELECTION_REPORT.md](docs/TECHNOLOGY_SELECTION_REPORT.md))
-* [docs/SCREENSHOT_CHECKLIST.md](docs/SCREENSHOT_CHECKLIST.md): the 31 screenshots to capture as test evidence, with exact steps (images go in `docs/screenshots/evidence/`)
-* [docs/REQUIREMENTS_TRACEABILITY.md](docs/REQUIREMENTS_TRACEABILITY.md): every requirement mapped to code and tests
-* [docs/evidence/TEST_RESULTS.md](docs/evidence/TEST_RESULTS.md): full test catalogue, coverage and fresh-install verification (generated from a real run)
-* [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md): every table and column (generated)
-* [docs/diagrams/](docs/diagrams/README.md): use case, ER, class and architecture diagrams, generated from the code and verified
-* [docs/MANUAL_TASKS.md](docs/MANUAL_TASKS.md): short checklist of what the group must still do by hand
-* `docs/archive/`: earlier stand-alone documents, now merged into the final report and kept only for reference
-* `docs/*.drawio`: original starter-pack diagrams, superseded by `docs/diagrams/` (open at https://app.diagrams.net)
-* `docs/tools/`: scripts that regenerate the diagrams, data dictionary, schema, sample data, test evidence, test-case tables and the PDF
+- docs/diagrams/: use case, ER, class and architecture diagrams
+- docs/DATA_DICTIONARY.md: every table and column
+- docs/REQUIREMENTS_TRACEABILITY.md: each requirement mapped to code and tests
+- docs/evidence/TEST_RESULTS.md: test results and coverage
+- docs/screenshots/evidence/: screenshots used as test evidence
