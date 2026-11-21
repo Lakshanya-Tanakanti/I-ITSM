@@ -5,7 +5,6 @@ A complete incident management platform for an organisation's IT service desk. E
 * **Frontend:** React, Vite, React Router, Axios, Recharts
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Pydantic, JWT, bcrypt
 * **Database:** SQLite (a single file, no installation needed)
-* **Tests:** pytest, 264 automated tests (264 passed, 0 failed, 94.8% statement coverage of the back end, verified 2026-11-19 on Linux). They cover the 30 acceptance scenarios T01 to T30 and the documented test cases TC-01 to TC-27
 
 ---
 
