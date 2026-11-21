@@ -1,0 +1,38 @@
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Node / front end
+node_modules/
+frontend/dist/
+dist/
+npm-debug.log*
+
+# Local database and secrets
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Temporary build and test files
+*.log
+*.tmp
+.cases_junit.xml
+docs/evidence/.report_build_input.md
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,117 @@
+digraph uc {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=13, nodesep=0.18, ranksep=2.2, splines=line, compound=true, labelloc=t, label="I-ITSM use case diagram"];
+  node [fontname="Helvetica", fontsize=10];
+  edge [arrowsize=0.6, color="#64748b"];
+  EMPLOYEE [shape=none, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><IMG SRC="actor.png"/></TD></TR><TR><TD><B>Employee</B></TD></TR></TABLE>>];
+  TECHNICIAN [shape=none, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><IMG SRC="actor.png"/></TD></TR><TR><TD><B>Technician</B></TD></TR></TABLE>>];
+  ADMIN [shape=none, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><IMG SRC="actor.png"/></TD></TR><TR><TD><B>Administrator</B></TD></TR></TABLE>>];
+  TIMER [shape=none, label=<<TABLE BORDER="0" CELLBORDER="0"><TR><TD><IMG SRC="actor.png"/></TD></TR><TR><TD><B>SLA monitor</B><BR/>(system timer)</TD></TR></TABLE>>];
+  subgraph cluster_system { label="I-ITSM system"; style="rounded"; color="#334155"; fontsize=12;
+    subgraph cluster_g0 { label="Account"; style="rounded,filled"; fillcolor="#eef2ff"; color="#cbd5e1"; fontsize=10;
+      UC01 [shape=ellipse, style=filled, fillcolor="white", label="Sign in"];
+      UC02 [shape=ellipse, style=filled, fillcolor="white", label="Manage own profile\nand password"];
+      UC03 [shape=ellipse, style=filled, fillcolor="white", label="Receive and read\nnotifications"];
+    }
+    subgraph cluster_g1 { label="Report and follow incidents"; style="rounded,filled"; fillcolor="#ecfdf5"; color="#cbd5e1"; fontsize=10;
+      UC04 [shape=ellipse, style=filled, fillcolor="white", label="Report incident"];
+      UC05 [shape=ellipse, style=filled, fillcolor="white", label="Preview priority\n(affected users rule)"];
+      UC06 [shape=ellipse, style=filled, fillcolor="white", label="Check duplicates and\nsuggest category"];
+      UC07 [shape=ellipse, style=filled, fillcolor="white", label="View incident list\nand details"];
+      UC08 [shape=ellipse, style=filled, fillcolor="white", label="Track timeline and SLA"];
+      UC09 [shape=ellipse, style=filled, fillcolor="white", label="Add comment or\nprovide information"];
+      UC10 [shape=ellipse, style=filled, fillcolor="white", label="Verify, reopen\nor close resolved incident"];
+      UC11 [shape=ellipse, style=filled, fillcolor="white", label="Give feedback"];
+    }
+    subgraph cluster_g2 { label="Resolve incidents"; style="rounded,filled"; fillcolor="#fffbeb"; color="#cbd5e1"; fontsize=10;
+      UC12 [shape=ellipse, style=filled, fillcolor="white", label="View my work queue"];
+      UC13 [shape=ellipse, style=filled, fillcolor="white", label="Set availability"];
+      UC14 [shape=ellipse, style=filled, fillcolor="white", label="Acknowledge and\ninvestigate incident"];
+      UC15 [shape=ellipse, style=filled, fillcolor="white", label="Add investigation note"];
+      UC16 [shape=ellipse, style=filled, fillcolor="white", label="Request more information"];
+      UC17 [shape=ellipse, style=filled, fillcolor="white", label="Resolve incident\n(summary and root cause)"];
+      UC18 [shape=ellipse, style=filled, fillcolor="white", label="View technician workload"];
+    }
+    subgraph cluster_g3 { label="Assignment and priority"; style="rounded,filled"; fillcolor="#fdf2f8"; color="#cbd5e1"; fontsize=10;
+      UC19 [shape=ellipse, style=filled, fillcolor="white", label="Assign or reassign\ntechnician"];
+      UC20 [shape=ellipse, style=filled, fillcolor="white", label="View ranked\nrecommendations"];
+      UC21 [shape=ellipse, style=filled, fillcolor="white", label="Override priority\nand criticality"];
+    }
+    subgraph cluster_g4 { label="Administration"; style="rounded,filled"; fillcolor="#f1f5f9"; color="#cbd5e1"; fontsize=10;
+      UC22 [shape=ellipse, style=filled, fillcolor="white", label="Manage users and\ntechnician skills"];
+      UC23 [shape=ellipse, style=filled, fillcolor="white", label="Manage categories\nand services"];
+      UC24 [shape=ellipse, style=filled, fillcolor="white", label="Manage SLA policies"];
+      UC25 [shape=ellipse, style=filled, fillcolor="white", label="Manage teams"];
+      UC26 [shape=ellipse, style=filled, fillcolor="white", label="Configure system\nstrategies and rules"];
+    }
+    subgraph cluster_g5 { label="Monitoring and reports"; style="rounded,filled"; fillcolor="#fef2f2"; color="#cbd5e1"; fontsize=10;
+      UC27 [shape=ellipse, style=filled, fillcolor="white", label="View reports\nand analytics"];
+      UC28 [shape=ellipse, style=filled, fillcolor="white", label="Monitor SLA risk\nand violations"];
+      UC29 [shape=ellipse, style=filled, fillcolor="white", label="Review audit log\nand email outbox"];
+    }
+    subgraph cluster_g6 { label="Automatic behaviour"; style="rounded,filled"; fillcolor="#f8fafc"; color="#cbd5e1"; fontsize=10;
+      UC30 [shape=ellipse, style=filled, fillcolor="white", label="Classify and assign\nnew incident"];
+      UC31 [shape=ellipse, style=filled, fillcolor="white", label="Detect SLA breach\nand escalate"];
+      UC32 [shape=ellipse, style=filled, fillcolor="white", label="Write audit entries\nand send notifications"];
+    }
+  }
+  EMPLOYEE -> UC01 [dir=none];
+  TECHNICIAN -> UC01 [dir=none];
+  ADMIN -> UC01 [dir=none];
+  EMPLOYEE -> UC02 [dir=none];
+  TECHNICIAN -> UC02 [dir=none];
+  ADMIN -> UC02 [dir=none];
+  EMPLOYEE -> UC03 [dir=none];
+  TECHNICIAN -> UC03 [dir=none];
+  ADMIN -> UC03 [dir=none];
+  EMPLOYEE -> UC04 [dir=none];
+  ADMIN -> UC04 [dir=none];
+  UC04 -> UC05 [style=dashed, label="«include»", fontsize=8, fontcolor="#475569"];
+  UC04 -> UC06 [style=dashed, label="«include»", fontsize=8, fontcolor="#475569"];
+  EMPLOYEE -> UC05 [dir=none];
+  TECHNICIAN -> UC05 [dir=none];
+  ADMIN -> UC05 [dir=none];
+  EMPLOYEE -> UC06 [dir=none];
+  TECHNICIAN -> UC06 [dir=none];
+  ADMIN -> UC06 [dir=none];
+  EMPLOYEE -> UC07 [dir=none];
+  TECHNICIAN -> UC07 [dir=none];
+  ADMIN -> UC07 [dir=none];
+  EMPLOYEE -> UC08 [dir=none];
+  TECHNICIAN -> UC08 [dir=none];
+  ADMIN -> UC08 [dir=none];
+  EMPLOYEE -> UC09 [dir=none];
+  TECHNICIAN -> UC09 [dir=none];
+  ADMIN -> UC09 [dir=none];
+  EMPLOYEE -> UC10 [dir=none];
+  ADMIN -> UC10 [dir=none];
+  EMPLOYEE -> UC11 [dir=none];
+  TECHNICIAN -> UC12 [dir=none];
+  TECHNICIAN -> UC13 [dir=none];
+  TECHNICIAN -> UC14 [dir=none];
+  ADMIN -> UC14 [dir=none];
+  TECHNICIAN -> UC15 [dir=none];
+  ADMIN -> UC15 [dir=none];
+  TECHNICIAN -> UC16 [dir=none];
+  ADMIN -> UC16 [dir=none];
+  UC09 -> UC16 [style=dashed, label="«extend»", fontsize=8, fontcolor="#475569"];
+  TECHNICIAN -> UC17 [dir=none];
+  ADMIN -> UC17 [dir=none];
+  TECHNICIAN -> UC18 [dir=none];
+  ADMIN -> UC18 [dir=none];
+  ADMIN -> UC19 [dir=none];
+  UC19 -> UC20 [style=dashed, label="«include»", fontsize=8, fontcolor="#475569"];
+  ADMIN -> UC20 [dir=none];
+  ADMIN -> UC21 [dir=none];
+  ADMIN -> UC22 [dir=none];
+  ADMIN -> UC23 [dir=none];
+  ADMIN -> UC24 [dir=none];
+  ADMIN -> UC25 [dir=none];
+  ADMIN -> UC26 [dir=none];
+  ADMIN -> UC27 [dir=none];
+  ADMIN -> UC28 [dir=none];
+  ADMIN -> UC29 [dir=none];
+  TIMER -> UC30 [dir=none];
+  UC30 -> UC20 [style=dashed, label="«include»", fontsize=8, fontcolor="#475569"];
+  TIMER -> UC31 [dir=none];
+  TIMER -> UC32 [dir=none];
+}

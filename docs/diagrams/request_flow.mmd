@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant R as React page + Axios
+    participant F as FastAPI route + dependencies
+    participant S as Service (@transactional)
+    participant P as Repositories + SQLAlchemy
+    participant O as Observers (audit, notifications)
+    U->>R: Click Submit incident
+    R->>F: POST /api/incidents with Bearer token (through the Vite proxy)
+    F->>F: get_db, get_container, get_current_user, require_roles
+    F->>S: create_incident(user, validated data)
+    S->>P: Read service, SLA policy, technicians (SQLite)
+    S->>O: publish(DomainEvent)
+    O->>P: Audit and notification rows (same transaction)
+    S->>P: commit, or rollback on any exception
+    S-->>F: Incident plus duplicate warnings
+    F-->>R: 201 JSON, or JSON error {detail, code} from the handlers
+    R-->>U: Success dialog, or alert or toast built by errMsg

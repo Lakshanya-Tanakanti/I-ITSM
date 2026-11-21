@@ -1,0 +1,166 @@
+---
+title: Data access (Repository pattern)
+---
+classDiagram
+    direction TB
+    class BaseRepository {
+        +model: type
+        +session
+        +add(entity) T
+        +get(entity_id) T?
+        +list_all() list
+        +flush()
+    }
+    class UserRepository {
+        +model
+        +get_by_email(email) User?
+        +search(role, q, is_active) list
+        +active_admins() list
+        +count() int
+    }
+    class TeamRepository {
+        +model
+        +get_by_name(name) SupportTeam?
+        +list_all() list
+    }
+    class TechnicianRepository {
+        +model
+        +get_by_user_id(user_id) TechnicianProfile?
+        +list_profiles() list
+        +workload_map() dict
+        +workload_for(user_id) int
+        +service_experience_map(service_id) dict
+        +replace_skills(profile, skills)
+    }
+    class CategoryRepository {
+        +model
+        +list(only_active) list
+        +get_by_name(name) IncidentCategory?
+    }
+    class ServiceRepository {
+        +model
+        +list(only_active) list
+        +get_by_name(name) Service?
+    }
+    class SlaPolicyRepository {
+        +model
+        +list() list
+        +find_active(priority, service_id) SlaPolicy?
+    }
+    class SettingRepository {
+        +session
+        +get(key) SystemSetting?
+        +all() dict
+        +set(key, value, now) SystemSetting
+    }
+    class IncidentRepository {
+        +model
+        +get_by_number(number) Incident?
+        +search(f) tuple
+        +list_open() list
+        +recent(since, exclude_id, limit) list
+        +resolved_with_resolution(category_id, service_id, exclude_id, limit) list
+        +open_for_service(service_id, exclude_id, since) list
+        +count() int
+    }
+    class NoteRepository {
+        +model
+        +for_incident(incident_id, include_internal) list
+        +last_of_type(incident_id, note_type) InvestigationNote?
+    }
+    class ResolutionRepository {
+        +model
+        +get_for_incident(incident_id) Resolution?
+    }
+    class FeedbackRepository {
+        +model
+        +get_for_incident(incident_id) EmployeeFeedback?
+        +average_rating() float?
+    }
+    class SlaViolationRepository {
+        +model
+        +exists(incident_id, sla_type) bool
+        +list_all(limit) list
+        +count() int
+    }
+    class NotificationRepository {
+        +model
+        +for_user(user_id, unread_only, limit, channel) list
+        +unread_count(user_id) int
+        +total_count(user_id) int
+        +mark_read(notification_id, user_id) Notification?
+        +mark_all_read(user_id) int
+        +outbox(limit) list
+        +exists_for(incident_id, event_type, recipient_id) bool
+    }
+    class AuditRepository {
+        +session
+        +append(entry) AuditLog
+        +search(incident_id, actor_id, action, from_dt, to_dt, q, page, page_size) tuple
+        +for_incident(incident_id) list
+        +distinct_actions() list
+        +count() int
+    }
+    class IncidentFilters {
+        +number: str?
+        +q: str?
+        +from_date: date?
+        +to_date: date?
+        +statuses: list
+        +priorities: list
+        +category_id: int?
+        +service_id: int?
+        +technician_id: int?
+        +sla_statuses: list
+        +reporter_id: int?
+        +scope_technician_id: int?
+        +unassigned: bool
+        +awaiting_info: bool?
+        +sort: str
+        +page: int
+        +page_size: int
+    }
+    class Repositories {
+        +users: UserRepository
+        +teams: TeamRepository
+        +technicians: TechnicianRepository
+        +categories: CategoryRepository
+        +services: ServiceRepository
+        +sla_policies: SlaPolicyRepository
+        +settings: SettingRepository
+        +incidents: IncidentRepository
+        +notes: NoteRepository
+        +resolutions: ResolutionRepository
+        +feedback: FeedbackRepository
+        +violations: SlaViolationRepository
+        +notifications: NotificationRepository
+        +audit: AuditRepository
+        +for_session(session) Repositories
+    }
+    BaseRepository <|-- UserRepository
+    BaseRepository <|-- TeamRepository
+    BaseRepository <|-- TechnicianRepository
+    BaseRepository <|-- CategoryRepository
+    BaseRepository <|-- ServiceRepository
+    BaseRepository <|-- SlaPolicyRepository
+    BaseRepository <|-- IncidentRepository
+    BaseRepository <|-- NoteRepository
+    BaseRepository <|-- ResolutionRepository
+    BaseRepository <|-- FeedbackRepository
+    BaseRepository <|-- SlaViolationRepository
+    BaseRepository <|-- NotificationRepository
+    Repositories "1" *-- "1" UserRepository : users
+    Repositories "1" *-- "1" TeamRepository : teams
+    Repositories "1" *-- "1" TechnicianRepository : technicians
+    Repositories "1" *-- "1" CategoryRepository : categories
+    Repositories "1" *-- "1" ServiceRepository : services
+    Repositories "1" *-- "1" SlaPolicyRepository : sla_policies
+    Repositories "1" *-- "1" SettingRepository : settings
+    Repositories "1" *-- "1" IncidentRepository : incidents
+    Repositories "1" *-- "1" NoteRepository : notes
+    Repositories "1" *-- "1" ResolutionRepository : resolutions
+    Repositories "1" *-- "1" FeedbackRepository : feedback
+    Repositories "1" *-- "1" SlaViolationRepository : violations
+    Repositories "1" *-- "1" NotificationRepository : notifications
+    Repositories "1" *-- "1" AuditRepository : audit
+    IncidentRepository ..> IncidentFilters : uses

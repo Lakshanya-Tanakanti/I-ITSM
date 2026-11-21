@@ -1,0 +1,240 @@
+---
+title: Service layer and dependency injection
+---
+classDiagram
+    direction TB
+    class Container {
+        +session: object
+        +clock: object
+        +repos: Repositories
+        +bus: EventBus
+        +settings: SettingsService
+        +sla: SlaService
+        +assignment: AssignmentService
+        +intelligence: IntelligenceService
+        +incidents: IncidentService
+        +presenter: IncidentPresenter
+        +auth: AuthService
+        +users: UserService
+        +config: ConfigService
+        +notifications: NotificationService
+        +reports: ReportService
+    }
+    class BaseService {
+        +session
+        +repos
+        +bus
+        +clock
+        +emit(event_type, description, incident, actor, previous_state, new_state, **metadata)
+    }
+    class AuthService {
+        +settings_service
+        +register(full_name, email, password, department) User
+        +login(email, password) tuple
+        +change_password(user, current_password, new_password)
+        +update_profile(user, changes) User
+    }
+    class UserService {
+        +settings_service
+        +get_for_actor(actor, user_id) User
+        +list(actor, role, q, is_active) list
+        +create(actor, data) User
+        +update(actor, user_id, changes) User
+        +deactivate(actor, user_id) User
+        +update_technician_profile(actor, user_id, data) User
+        +set_availability(actor, is_available) User
+        +workload(actor) list at 0x7f58359cad40>
+    }
+    class ConfigService {
+        +create_category(actor, data) IncidentCategory
+        +update_category(actor, category_id, changes) IncidentCategory
+        +create_service(actor, data) Service
+        +update_service(actor, service_id, changes) Service
+        +create_sla_policy(actor, data) SlaPolicy
+        +update_sla_policy(actor, policy_id, changes) SlaPolicy
+        +create_team(actor, data) SupportTeam
+        +update_team(actor, team_id, changes) SupportTeam
+    }
+    class SettingsService {
+        +app_settings
+        +defaults() dict
+        +all() dict
+        +options() dict
+        +assignment_strategy()
+        +priority_strategy()
+        +auto_assign() bool
+        +escalation_enabled() bool
+        +affected_users_adjustment() bool
+        +duplicate_threshold() float
+        +update(actor, changes) dict
+    }
+    class SlaService {
+        +settings_service
+        +select_policy(service_id, priority) SlaPolicy
+        +apply_policy(incident, policy)
+        +describe(incident, now) dict
+        +refresh_status(incident, now) SlaStatus
+        +on_acknowledged(incident, now)
+        +on_resolved(incident, now)
+        +evaluate(incident, now, summary)
+        +run_check() dict
+        +at_risk(limit) list
+        +violations(limit) list
+    }
+    class IncidentService {
+        +settings_service
+        +sla
+        +assignment
+        +intelligence
+        +actor_kinds(user, incident) set$
+        +can_view(user, incident) bool
+        +get_for_actor(actor, number) Incident
+        +list_incidents(actor, filters) tuple
+        +create_incident(actor, data) CreateResult
+        +assign(actor, number, technician_id, override) Incident
+        +transition(actor, number, to_status, reason, resolution_summary, root_cause, closure_note, technician_id, override) Incident
+        +add_note(actor, number, note_type, body, is_internal) InvestigationNote
+        +list_notes(actor, number) list
+        +submit_feedback(actor, number, rating, comment) EmployeeFeedback
+        +update_incident(actor, number, changes) Incident
+        +preview_priority(actor, data) dict
+        +allowed_transitions(actor, incident) list
+        +timeline(actor, number) list
+    }
+    class AssignmentService {
+        +repos
+        +settings_service
+        +policy
+        +recommend(incident, strategy_name) dict
+        +ensure_assignable(incident, technician, override) list
+    }
+    class IntelligenceService {
+        +repos
+        +clock
+        +settings_service
+        +sla
+        +suggest_category(title, description) dict
+        +similarity(a_title, a_desc, a_service, a_cat, b) tuple
+        +find_duplicates(title, description, service_id, category_id, exclude_id, limit) list
+        +duplicates_for(incident) list
+        +sla_risk(incident, workload) dict
+        +related(incident) dict
+        +suggested_resolutions(incident, limit) list
+    }
+    class NotificationService {
+        +list_for(user, unread_only, limit) dict
+        +mark_read(user, notification_id)
+        +mark_all_read(user) int
+        +outbox(limit) list
+    }
+    class ReportService {
+        +session
+        +repos
+        +clock
+        +sla
+        +users
+        +presenter
+        +overview() dict
+        +by_service() list
+        +by_category() list
+        +trends(days) list
+        +category_service_matrix() list
+        +dashboard(actor) dict
+    }
+    class IncidentPresenter {
+        +repos
+        +sla
+        +intelligence
+        +incidents
+        +list_item(inc, workload, with_risk) dict
+        +list_items(incidents) list
+        +detail(inc, actor) dict
+        +note(note) dict$
+        +timeline_entry(entry) dict$
+        +duplicate_item(match) dict$
+    }
+    class SlaMonitor {
+        +session_factory
+        +clock
+        +app_settings
+        +interval
+        -_stop
+        -_thread
+        +last_run
+        +runs
+        +run_once() dict
+        +start()
+        +stop()
+    }
+    class IncidentFactory {
+        +create(title, description, reporter, service, category, category_source, impact, urgency, criticality, criticality_overridden, priority_result, affected_system, affected_users, now, effective_impact) Incident$
+        +assign_number(incident)
+    }
+    class CreateResult {
+        +incident: Incident
+        +duplicates: list
+        +assigned: bool
+        +assignment_message: str
+    }
+    class LifecycleManager {
+        +validate(current, target, actor_kinds, payload) TransitionRule$
+        +allowed_next(current, actor_kinds) list$
+    }
+    class Repositories {
+        +users: UserRepository
+        +teams: TeamRepository
+        +technicians: TechnicianRepository
+        +categories: CategoryRepository
+        +services: ServiceRepository
+        +sla_policies: SlaPolicyRepository
+        +settings: SettingRepository
+        +incidents: IncidentRepository
+        +notes: NoteRepository
+        +resolutions: ResolutionRepository
+        +feedback: FeedbackRepository
+        +violations: SlaViolationRepository
+        +notifications: NotificationRepository
+        +audit: AuditRepository
+        +for_session(session) Repositories
+    }
+    class EventBus {
+        -_observers
+        +subscribe(observer)
+        +unsubscribe(observer)
+        +publish(event)
+    }
+    class Clock {
+        <<interface>>
+        +now() datetime*
+    }
+    BaseService <|-- AuthService
+    BaseService <|-- UserService
+    BaseService <|-- ConfigService
+    BaseService <|-- SettingsService
+    BaseService <|-- SlaService
+    BaseService <|-- IncidentService
+    BaseService <|-- NotificationService
+    Container "1" *-- "1" SettingsService : settings
+    Container "1" *-- "1" SlaService : sla
+    Container "1" *-- "1" AssignmentService : assignment
+    Container "1" *-- "1" IntelligenceService : intelligence
+    Container "1" *-- "1" IncidentService : incidents
+    Container "1" *-- "1" IncidentPresenter : presenter
+    Container "1" *-- "1" AuthService : auth
+    Container "1" *-- "1" UserService : users
+    Container "1" *-- "1" ConfigService : config
+    Container "1" *-- "1" NotificationService : notifications
+    Container "1" *-- "1" ReportService : reports
+    Container "1" *-- "1" EventBus : bus
+    Container "1" *-- "1" Repositories : repos
+    Container "1" o-- "1" Clock : clock
+    BaseService o-- "1" Repositories : repos
+    BaseService o-- "1" EventBus : bus
+    BaseService o-- "1" Clock : clock
+    IncidentService o-- "1" SlaService : sla
+    IncidentService o-- "1" AssignmentService : assignment
+    IncidentService o-- "1" IntelligenceService : intelligence
+    IncidentService ..> IncidentFactory : uses
+    IncidentService ..> CreateResult : creates
+    IncidentService ..> LifecycleManager : uses
+    SlaMonitor ..> Container : creates

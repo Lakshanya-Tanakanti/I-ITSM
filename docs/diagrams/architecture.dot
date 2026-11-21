@@ -1,0 +1,75 @@
+digraph arch {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=12, nodesep=0.5, ranksep=0.7, labelloc=t, label="I-ITSM architecture (backend edges are the real import dependencies between packages)"];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.15,0.08"];
+  edge [color="#475569", arrowsize=0.7];
+  subgraph cluster_ui { label="Presentation (React SPA, browser)"; style="rounded,filled"; fillcolor="#e0e7ff"; color="#818cf8";
+    pages [label="pages\nlogin, dashboards, incidents,\nadmin screens", fillcolor="#c7d2fe"];
+    ui [label="components, context, layouts\nbadges, tables, dialogs,\nauth and toasts", fillcolor="#c7d2fe"];
+    axios [label="services/api.js\nAxios client + JWT header", fillcolor="#c7d2fe"]; }
+  subgraph cluster_1 { label="API layer"; style="rounded,filled"; fillcolor="#dbeafe"; color="#94a3b8";
+    main [label="main.py\nFastAPI app factory", fillcolor="white"];
+    routes [label="routes\nHTTP endpoints", fillcolor="white"];
+    middleware [label="middleware\nauth deps, error handlers", fillcolor="white"];
+    schemas [label="schemas\nPydantic models", fillcolor="white"];
+  }
+  subgraph cluster_2 { label="Business layer"; style="rounded,filled"; fillcolor="#dcfce7"; color="#94a3b8";
+    services [label="services\nworkflows, SLA, intelligence,\nreports, DI container", fillcolor="white"];
+    strategies [label="strategies\npriority, assignment", fillcolor="white"];
+    observers [label="observers\nevent bus, audit,\nnotifications", fillcolor="white"];
+  }
+  subgraph cluster_3 { label="Domain"; style="rounded,filled"; fillcolor="#fef3c7"; color="#94a3b8";
+    domain [label="domain\nenums, lifecycle, events,\nexceptions, clock", fillcolor="white"];
+  }
+  subgraph cluster_4 { label="Data access"; style="rounded,filled"; fillcolor="#fce7f3"; color="#94a3b8";
+    repositories [label="repositories\nall database access", fillcolor="white"];
+    models [label="models\nSQLAlchemy entities", fillcolor="white"];
+    database [label="database.py\nengine, session", fillcolor="white"];
+  }
+  subgraph cluster_5 { label="Cross-cutting"; style="rounded,filled"; fillcolor="#f1f5f9"; color="#94a3b8";
+    config [label="config.py\nsettings", fillcolor="white"];
+    utils [label="utils\nsecurity, text, seed", fillcolor="white"];
+  }
+  db [label="SQLite file\nitsm.db", shape=cylinder, fillcolor="#fde68a"];
+  monitor [label="SLA monitor thread\n(every 60 s)", shape=component, fillcolor="#fecaca"];
+  pages -> ui [arrowhead=none];
+  pages -> axios;
+  axios -> routes [label="HTTP /api (JSON, JWT)", style=bold, color="#4f46e5"];
+  models -> db [label="SQL", style=bold, color="#b45309"];
+  monitor -> services [label="run_check()", style=dashed];
+  database -> config;
+  main -> config;
+  main -> database;
+  main -> domain;
+  main -> middleware;
+  main -> routes;
+  main -> services;
+  main -> utils;
+  middleware -> domain;
+  middleware -> models;
+  middleware -> services;
+  middleware -> utils;
+  models -> database;
+  models -> domain;
+  models -> utils;
+  observers -> domain;
+  observers -> models;
+  observers -> repositories;
+  repositories -> domain;
+  repositories -> models;
+  routes -> domain;
+  routes -> middleware;
+  routes -> models;
+  routes -> repositories;
+  routes -> schemas;
+  routes -> services;
+  schemas -> domain;
+  services -> config;
+  services -> domain;
+  services -> models;
+  services -> observers;
+  services -> repositories;
+  services -> strategies;
+  services -> utils;
+  strategies -> domain;
+  utils -> services [style=dotted, label="seed.py only"];
+}

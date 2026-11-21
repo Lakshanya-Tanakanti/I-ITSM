@@ -1,0 +1,143 @@
+---
+title: Persistent entities (SQLAlchemy models)
+---
+classDiagram
+    direction TB
+    class User {
+        +id: Integer PK
+        +employee_code: String
+        +full_name: String
+        +email: String
+        +role: Enum
+        +department: String
+        +is_active: Boolean
+        +set_password(raw_password)
+        +check_password(raw_password) bool
+    }
+    class TechnicianProfile {
+        +id: Integer PK
+        +experience_years: Integer
+        +is_available: Boolean
+        +workload_limit: Integer
+        +created_at: UTCDateTime
+        +skill_map() dict
+    }
+    class TechnicianSkill {
+        +proficiency: Integer
+    }
+    class SupportTeam {
+        +id: Integer PK
+        +name: String
+        +description: Text
+        +is_active: Boolean
+    }
+    class IncidentCategory {
+        +id: Integer PK
+        +name: String
+        +description: Text
+        +keywords: Text
+        +is_active: Boolean
+    }
+    class Service {
+        +id: Integer PK
+        +name: String
+        +description: Text
+        +business_criticality: Integer
+        +is_active: Boolean
+    }
+    class SlaPolicy {
+        +id: Integer PK
+        +name: String
+        +priority: Enum
+        +response_minutes: Integer
+        +resolution_minutes: Integer
+        +warning_percent: Integer
+        +is_active: Boolean
+    }
+    class Incident {
+        +id: Integer PK
+        +number: String
+        +title: String
+        +status: Enum
+        +priority: Enum
+        +priority_score: Integer
+        +impact: Integer
+        +effective_impact: Integer
+        +urgency: Integer
+        +business_criticality: Integer
+        +affected_users: Integer
+        +response_deadline: UTCDateTime
+        +resolution_deadline: UTCDateTime
+        +sla_status: Enum
+        +escalation_level: Integer
+    }
+    class InvestigationNote {
+        +id: Integer PK
+        +note_type: Enum
+        +body: Text
+        +is_internal: Boolean
+        +created_at: UTCDateTime
+    }
+    class Resolution {
+        +id: Integer PK
+        +summary: Text
+        +root_cause: Text
+        +created_at: UTCDateTime
+    }
+    class EmployeeFeedback {
+        +id: Integer PK
+        +rating: Integer
+        +comment: Text
+        +created_at: UTCDateTime
+    }
+    class SlaViolation {
+        +id: Integer PK
+        +sla_type: Enum
+        +deadline_at: UTCDateTime
+        +detected_at: UTCDateTime
+    }
+    class Notification {
+        +id: Integer PK
+        +channel: Enum
+        +subject: String
+        +body: Text
+        +event_type: String
+        +is_read: Boolean
+        +delivery_status: String
+        +created_at: UTCDateTime
+    }
+    class AuditLog {
+        +id: Integer PK
+        +action: String
+        +description: Text
+        +previous_state: String
+        +new_state: String
+        +created_at: UTCDateTime
+    }
+    class SystemSetting {
+        +key: String PK
+        +value: Text
+        +updated_at: UTCDateTime
+    }
+    AuditLog "*" --> "0..1" User : actor
+    AuditLog "*" --> "0..1" Incident : incident
+    SlaPolicy "*" --> "0..1" Service : service
+    Incident "*" --> "0..1" User : reporter
+    Incident "*" --> "0..1" User : assigned_technician
+    Incident "*" --> "0..1" IncidentCategory : category
+    Incident "*" --> "1" Service : service
+    Incident "*" --> "0..1" SlaPolicy : sla_policy
+    Incident "*" --> "0..1" Incident : duplicate_of
+    Incident "1" *-- "0..*" InvestigationNote : notes
+    Incident "1" *-- "0..1" Resolution : resolution
+    Incident "1" *-- "0..1" EmployeeFeedback : feedback
+    Incident "1" *-- "0..*" SlaViolation : violations
+    InvestigationNote "*" --> "0..1" User : author
+    Resolution "*" --> "1" User : technician
+    Notification "*" --> "1" User : recipient
+    Notification "*" --> "0..1" Incident : incident
+    SupportTeam "*" --> "0..1" User : lead
+    SupportTeam "1" o-- "0..*" TechnicianProfile : members
+    TechnicianProfile "1" *-- "0..*" TechnicianSkill : skills
+    TechnicianSkill "*" --> "1" IncidentCategory : category
+    User "1" *-- "0..1" TechnicianProfile : technician_profile

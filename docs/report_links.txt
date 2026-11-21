@@ -1,0 +1,3 @@
+# Fill in the two links, then run: python docs/tools/build_master.py
+REPO_URL=
+VIDEO_URL=

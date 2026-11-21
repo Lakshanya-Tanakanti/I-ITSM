@@ -1,0 +1,89 @@
+---
+title: Exceptions and clock abstraction
+---
+classDiagram
+    direction TB
+    class AppError {
+        +status_code
+        +code
+        +message
+        +details
+    }
+    class AuthenticationError {
+        +status_code
+        +code
+    }
+    class PermissionDeniedError {
+        +status_code
+        +code
+    }
+    class NotFoundError {
+        +status_code
+        +code
+    }
+    class IncidentNotFoundError {
+        +code
+    }
+    class ServiceNotFoundError {
+        +code
+    }
+    class ConflictError {
+        +status_code
+        +code
+    }
+    class DuplicateResourceError {
+        +code
+    }
+    class InvalidTransitionError {
+        +code
+    }
+    class TechnicianUnavailableError {
+        +code
+    }
+    class WorkloadExceededError {
+        +code
+    }
+    class MissingSkillError {
+        +code
+    }
+    class InvalidInputError {
+        +status_code
+        +code
+    }
+    class MissingSlaConfigurationError {
+        +status_code
+        +code
+    }
+    class DatabaseUnavailableError {
+        +status_code
+        +code
+    }
+    class Clock {
+        <<interface>>
+        +now() datetime*
+    }
+    class SystemClock {
+        +now() datetime
+    }
+    class MutableClock {
+        -_now
+        +now() datetime
+        +set(value)
+        +advance(**kwargs) datetime
+    }
+    AppError <|-- AuthenticationError
+    AppError <|-- PermissionDeniedError
+    AppError <|-- NotFoundError
+    NotFoundError <|-- IncidentNotFoundError
+    NotFoundError <|-- ServiceNotFoundError
+    AppError <|-- ConflictError
+    ConflictError <|-- DuplicateResourceError
+    ConflictError <|-- InvalidTransitionError
+    ConflictError <|-- TechnicianUnavailableError
+    ConflictError <|-- WorkloadExceededError
+    ConflictError <|-- MissingSkillError
+    AppError <|-- InvalidInputError
+    AppError <|-- MissingSlaConfigurationError
+    AppError <|-- DatabaseUnavailableError
+    Clock <|.. SystemClock
+    Clock <|.. MutableClock

@@ -1,0 +1,136 @@
+"""Domain enumerations shared by every layer."""
+from enum import Enum
+
+
+class Role(str, Enum):
+    EMPLOYEE = "EMPLOYEE"
+    TECHNICIAN = "TECHNICIAN"
+    ADMIN = "ADMIN"
+
+
+class IncidentStatus(str, Enum):
+    NEW = "NEW"
+    CLASSIFIED = "CLASSIFIED"
+    ASSIGNED = "ASSIGNED"
+    ACKNOWLEDGED = "ACKNOWLEDGED"
+    IN_PROGRESS = "IN_PROGRESS"
+    RESOLVED = "RESOLVED"
+    VERIFIED = "VERIFIED"
+    CLOSED = "CLOSED"
+
+
+class Priority(str, Enum):
+    P1 = "P1"
+    P2 = "P2"
+    P3 = "P3"
+    P4 = "P4"
+
+    @property
+    def label(self) -> str:
+        return {"P1": "Critical", "P2": "High", "P3": "Medium", "P4": "Low"}[self.value]
+
+
+class SlaType(str, Enum):
+    RESPONSE = "RESPONSE"
+    RESOLUTION = "RESOLUTION"
+
+
+class SlaStatus(str, Enum):
+    ON_TRACK = "ON_TRACK"
+    AT_RISK = "AT_RISK"
+    BREACHED = "BREACHED"
+    MET = "MET"
+
+
+class RiskLevel(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class NoteType(str, Enum):
+    INVESTIGATION = "INVESTIGATION"
+    INFO_REQUEST = "INFO_REQUEST"
+    INFO_REPLY = "INFO_REPLY"
+    ADDITIONAL_INFO = "ADDITIONAL_INFO"
+    COMMENT = "COMMENT"
+    REOPEN = "REOPEN"
+
+
+class Channel(str, Enum):
+    IN_APP = "IN_APP"
+    EMAIL = "EMAIL"
+
+
+class ActorKind(str, Enum):
+    """Roles a person can play *with respect to one specific incident*."""
+
+    SYSTEM = "SYSTEM"
+    ADMIN = "ADMIN"
+    ASSIGNED_TECH = "ASSIGNED_TECH"
+    REPORTER = "REPORTER"
+
+
+class EventType(str, Enum):
+    # incident events
+    INCIDENT_CREATED = "INCIDENT_CREATED"
+    INCIDENT_CLASSIFIED = "INCIDENT_CLASSIFIED"
+    PRIORITY_CALCULATED = "PRIORITY_CALCULATED"
+    PRIORITY_CHANGED = "PRIORITY_CHANGED"
+    INCIDENT_UPDATED = "INCIDENT_UPDATED"
+    CATEGORY_CHANGED = "CATEGORY_CHANGED"
+    DUPLICATE_DETECTED = "DUPLICATE_DETECTED"
+    INCIDENT_ASSIGNED = "INCIDENT_ASSIGNED"
+    INCIDENT_REASSIGNED = "INCIDENT_REASSIGNED"
+    NO_TECHNICIAN_AVAILABLE = "NO_TECHNICIAN_AVAILABLE"
+    INCIDENT_ACKNOWLEDGED = "INCIDENT_ACKNOWLEDGED"
+    INVESTIGATION_STARTED = "INVESTIGATION_STARTED"
+    NOTE_ADDED = "NOTE_ADDED"
+    INFO_REQUESTED = "INFO_REQUESTED"
+    INFO_PROVIDED = "INFO_PROVIDED"
+    INCIDENT_RESOLVED = "INCIDENT_RESOLVED"
+    INCIDENT_REOPENED = "INCIDENT_REOPENED"
+    INCIDENT_VERIFIED = "INCIDENT_VERIFIED"
+    INCIDENT_CLOSED = "INCIDENT_CLOSED"
+    FEEDBACK_SUBMITTED = "FEEDBACK_SUBMITTED"
+    DUPLICATE_LINKED = "DUPLICATE_LINKED"
+    # sla events
+    SLA_WARNING = "SLA_WARNING"
+    SLA_BREACHED = "SLA_BREACHED"
+    INCIDENT_ESCALATED = "INCIDENT_ESCALATED"
+    # account / admin events (no incident attached)
+    USER_REGISTERED = "USER_REGISTERED"
+    USER_LOGIN = "USER_LOGIN"
+    USER_LOGIN_FAILED = "USER_LOGIN_FAILED"
+    PASSWORD_CHANGED = "PASSWORD_CHANGED"
+    USER_CREATED = "USER_CREATED"
+    USER_UPDATED = "USER_UPDATED"
+    USER_DEACTIVATED = "USER_DEACTIVATED"
+    TECHNICIAN_PROFILE_UPDATED = "TECHNICIAN_PROFILE_UPDATED"
+    AVAILABILITY_CHANGED = "AVAILABILITY_CHANGED"
+    CONFIG_CHANGED = "CONFIG_CHANGED"
+
+
+# Status groupings used by workload, dashboards and the SLA monitor.
+ACTIVE_WORKLOAD_STATUSES = (
+    IncidentStatus.ASSIGNED,
+    IncidentStatus.ACKNOWLEDGED,
+    IncidentStatus.IN_PROGRESS,
+)
+OPEN_STATUSES = (
+    IncidentStatus.NEW,
+    IncidentStatus.CLASSIFIED,
+    IncidentStatus.ASSIGNED,
+    IncidentStatus.ACKNOWLEDGED,
+    IncidentStatus.IN_PROGRESS,
+)
+DONE_STATUSES = (
+    IncidentStatus.RESOLVED,
+    IncidentStatus.VERIFIED,
+    IncidentStatus.CLOSED,
+)
+PRE_ACK_STATUSES = (
+    IncidentStatus.NEW,
+    IncidentStatus.CLASSIFIED,
+    IncidentStatus.ASSIGNED,
+)

@@ -1,0 +1,136 @@
+---
+title: Events, observers and notification channels (Observer pattern)
+---
+classDiagram
+    direction TB
+    class DomainEvent {
+        +type: EventType
+        +description: str
+        +occurred_at: datetime
+        +actor_id: UnionType
+        +incident: Any
+        +previous_state: UnionType
+        +new_state: UnionType
+        +metadata: dict
+    }
+    class EventType {
+        <<enumeration>>
+        INCIDENT_CREATED
+        INCIDENT_CLASSIFIED
+        PRIORITY_CALCULATED
+        PRIORITY_CHANGED
+        INCIDENT_UPDATED
+        CATEGORY_CHANGED
+        DUPLICATE_DETECTED
+        INCIDENT_ASSIGNED
+        INCIDENT_REASSIGNED
+        NO_TECHNICIAN_AVAILABLE
+        INCIDENT_ACKNOWLEDGED
+        INVESTIGATION_STARTED
+        NOTE_ADDED
+        INFO_REQUESTED
+        INFO_PROVIDED
+        INCIDENT_RESOLVED
+        INCIDENT_REOPENED
+        INCIDENT_VERIFIED
+        INCIDENT_CLOSED
+        FEEDBACK_SUBMITTED
+        DUPLICATE_LINKED
+        SLA_WARNING
+        SLA_BREACHED
+        INCIDENT_ESCALATED
+        USER_REGISTERED
+        USER_LOGIN
+        USER_LOGIN_FAILED
+        PASSWORD_CHANGED
+        USER_CREATED
+        USER_UPDATED
+        USER_DEACTIVATED
+        TECHNICIAN_PROFILE_UPDATED
+        AVAILABILITY_CHANGED
+        CONFIG_CHANGED
+    }
+    class EventObserver {
+        <<interface>>
+        +critical: bool
+        +handle(event)*
+    }
+    class EventBus {
+        -_observers
+        +subscribe(observer)
+        +unsubscribe(observer)
+        +publish(event)
+    }
+    class AuditObserver {
+        +critical
+        +audit_repo
+        +handle(event)
+    }
+    class NotificationObserver {
+        +critical
+        +repos
+        +clock
+        +channels
+        -_routes
+        +handle(event)
+    }
+    class Message {
+        +message: str
+    }
+    class NotificationChannel {
+        <<interface>>
+        +channel: Channel
+        +deliver(repo, recipient, incident_id, subject, body, event_type, now) Notification*
+    }
+    class InAppChannel {
+        +channel
+        +deliver(repo, recipient, incident_id, subject, body, event_type, now)
+    }
+    class SimulatedEmailChannel {
+        +channel
+        +deliver(repo, recipient, incident_id, subject, body, event_type, now)
+    }
+    class ChannelFactory {
+        -_registry: dict
+        +register(channel_cls)
+        +default_channels() list
+    }
+    class AuditRepository {
+        +session
+        +append(entry) AuditLog
+        +search(incident_id, actor_id, action, from_dt, to_dt, q, page, page_size) tuple
+        +for_incident(incident_id) list
+        +distinct_actions() list
+        +count() int
+    }
+    class NotificationRepository {
+        +model
+        +for_user(user_id, unread_only, limit, channel) list
+        +unread_count(user_id) int
+        +total_count(user_id) int
+        +mark_read(notification_id, user_id) Notification?
+        +mark_all_read(user_id) int
+        +outbox(limit) list
+        +exists_for(incident_id, event_type, recipient_id) bool
+    }
+    class BaseService {
+        +session
+        +repos
+        +bus
+        +clock
+        +emit(event_type, description, incident, actor, previous_state, new_state, **metadata)
+    }
+    EventObserver <|.. AuditObserver
+    EventObserver <|.. NotificationObserver
+    NotificationChannel <|.. InAppChannel
+    NotificationChannel <|.. SimulatedEmailChannel
+    BaseService ..> DomainEvent : creates
+    BaseService o-- "1" EventBus : bus
+    EventBus "1" o-- "0..*" EventObserver : _observers
+    EventBus ..> DomainEvent : uses
+    DomainEvent --> "1" EventType : type
+    AuditObserver o-- "1" AuditRepository : audit_repo
+    NotificationObserver o-- "1..*" NotificationChannel : channels
+    NotificationObserver ..> Message : creates
+    ChannelFactory ..> InAppChannel : registers
+    ChannelFactory ..> SimulatedEmailChannel : registers

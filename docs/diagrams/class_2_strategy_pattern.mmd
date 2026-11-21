@@ -1,0 +1,136 @@
+---
+title: Priority and assignment (Strategy pattern)
+---
+classDiagram
+    direction TB
+    class PriorityStrategy {
+        <<abstract>>
+        +name: str
+        +label: str
+        +description: str
+        +calculate(impact, urgency, criticality) PriorityResult*
+        +validate(impact, urgency, criticality)$
+    }
+    class ScoreProductPriorityStrategy {
+        +name
+        +label
+        +description
+        +level_for_score(score) Priority
+        +calculate(impact, urgency, criticality) PriorityResult
+    }
+    class WeightedPriorityStrategy {
+        +name
+        +label
+        +description
+        +calculate(impact, urgency, criticality) PriorityResult
+    }
+    class PriorityResult {
+        +score: int
+        +priority: Priority
+        +explanation: str
+    }
+    class AffectedUsersPolicy {
+        +floor_for(affected_users) int
+        +adjust(impact, affected_users) tuple
+    }
+    class AssignmentStrategy {
+        <<abstract>>
+        +name: str
+        +label: str
+        +description: str
+        +rank(eligible, ctx) list
+    }
+    class SkillBasedStrategy {
+        +name
+        +label
+        +description
+    }
+    class LoadBasedStrategy {
+        +name
+        +label
+        +description
+    }
+    class SkillThenLoadStrategy {
+        +name
+        +label
+        +description
+    }
+    class EligibilityPolicy {
+        +check(tech, ctx) list
+    }
+    class AssignmentContext {
+        +category_id: int?
+        +category_name: str
+        +priority: Priority
+        +service_id: int?
+    }
+    class TechnicianCandidate {
+        +user_id: int
+        +name: str
+        +is_active: bool
+        +is_available: bool
+        +workload_limit: int
+        +active_workload: int
+        +experience_years: int
+        +skills: dict
+        +team_id: int?
+        +team_name: str?
+        +service_experience: int
+    }
+    class Recommendation {
+        +technician_id: int
+        +name: str
+        +score: float
+        +rank: int
+        +reasons: list
+        +factors: dict
+        +team_name: str?
+    }
+    class Ineligibility {
+        +code: str
+        +message: str
+    }
+    class StrategyFactory {
+        -_assignment: dict
+        -_priority: dict
+        +register_assignment(strategy_cls)
+        +register_priority(strategy_cls)
+        +assignment(name) AssignmentStrategy
+        +priority(name) PriorityStrategy
+        +assignment_options() list
+        +priority_options() list
+    }
+    class SettingsService {
+        +app_settings
+        +defaults() dict
+        +all() dict
+        +options() dict
+        +assignment_strategy()
+        +priority_strategy()
+        +auto_assign() bool
+        +escalation_enabled() bool
+        +affected_users_adjustment() bool
+        +duplicate_threshold() float
+        +update(actor, changes) dict
+    }
+    class AssignmentService {
+        +repos
+        +settings_service
+        +policy
+        +recommend(incident, strategy_name) dict
+        +ensure_assignable(incident, technician, override) list
+    }
+    PriorityStrategy <|-- ScoreProductPriorityStrategy
+    PriorityStrategy <|-- WeightedPriorityStrategy
+    AssignmentStrategy <|-- SkillBasedStrategy
+    AssignmentStrategy <|-- LoadBasedStrategy
+    AssignmentStrategy <|-- SkillThenLoadStrategy
+    PriorityStrategy ..> PriorityResult : returns
+    AssignmentStrategy ..> Recommendation : returns
+    AssignmentStrategy ..> TechnicianCandidate : uses
+    AssignmentStrategy ..> AssignmentContext : uses
+    EligibilityPolicy ..> Ineligibility : returns
+    AssignmentService "1" *-- "1" EligibilityPolicy : policy
+    StrategyFactory ..> PriorityStrategy : creates
+    StrategyFactory ..> AssignmentStrategy : creates
+    SettingsService ..> StrategyFactory : uses

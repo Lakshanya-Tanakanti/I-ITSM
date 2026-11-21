@@ -1,0 +1,183 @@
+---
+title: I-ITSM database (ER diagram)
+---
+erDiagram
+    incident_categories {
+        integer id PK
+        varchar(80) name UK "NOT NULL"
+        text description
+        text keywords
+        boolean is_active "NOT NULL"
+    }
+    services {
+        integer id PK
+        varchar(120) name UK "NOT NULL"
+        text description
+        integer business_criticality "NOT NULL"
+        boolean is_active "NOT NULL"
+    }
+    system_settings {
+        varchar(100) key PK
+        text value "NOT NULL"
+        datetime updated_at "NOT NULL"
+    }
+    users {
+        integer id PK
+        varchar(40) employee_code UK
+        varchar(120) full_name "NOT NULL"
+        varchar(255) email UK "NOT NULL"
+        varchar(255) password_hash "NOT NULL"
+        varchar(20) role "NOT NULL"
+        varchar(100) department
+        boolean is_active "NOT NULL"
+        datetime created_at "NOT NULL"
+        datetime updated_at "NOT NULL"
+    }
+    sla_policies {
+        integer id PK
+        varchar(120) name "NOT NULL"
+        varchar(2) priority "NOT NULL"
+        integer service_id FK
+        integer response_minutes "NOT NULL"
+        integer resolution_minutes "NOT NULL"
+        integer warning_percent "NOT NULL"
+        boolean is_active "NOT NULL"
+    }
+    support_teams {
+        integer id PK
+        varchar(100) name UK "NOT NULL"
+        text description
+        integer lead_id FK
+        boolean is_active "NOT NULL"
+    }
+    incidents {
+        integer id PK
+        varchar(30) number UK "NOT NULL"
+        varchar(200) title "NOT NULL"
+        text description "NOT NULL"
+        integer reporter_id FK "NOT NULL"
+        integer category_id FK
+        varchar(20) category_source
+        integer service_id FK "NOT NULL"
+        varchar(200) affected_system
+        integer affected_users
+        integer impact "NOT NULL"
+        integer effective_impact
+        integer urgency "NOT NULL"
+        integer business_criticality "NOT NULL"
+        boolean criticality_overridden "NOT NULL"
+        integer priority_score "NOT NULL"
+        varchar(2) priority "NOT NULL"
+        varchar(30) status "NOT NULL"
+        integer assigned_technician_id FK
+        integer sla_policy_id FK
+        datetime response_deadline
+        datetime resolution_deadline
+        datetime acknowledged_at
+        datetime resolved_at
+        datetime verified_at
+        datetime closed_at
+        varchar(20) sla_status "NOT NULL"
+        datetime response_warned_at
+        datetime resolution_warned_at
+        integer escalation_level "NOT NULL"
+        datetime escalated_at
+        boolean awaiting_info "NOT NULL"
+        integer reopen_count "NOT NULL"
+        integer duplicate_of_id FK
+        text closure_note
+        datetime created_at "NOT NULL"
+        datetime updated_at "NOT NULL"
+    }
+    technician_profiles {
+        integer id PK
+        integer user_id FK,UK "NOT NULL"
+        integer team_id FK
+        integer experience_years "NOT NULL"
+        boolean is_available "NOT NULL"
+        integer workload_limit "NOT NULL"
+        datetime created_at "NOT NULL"
+    }
+    audit_logs {
+        integer id PK
+        integer actor_id FK
+        integer incident_id FK
+        varchar(80) action "NOT NULL"
+        varchar(30) previous_state
+        varchar(30) new_state
+        text description "NOT NULL"
+        text metadata
+        datetime created_at "NOT NULL"
+    }
+    employee_feedback {
+        integer id PK
+        integer incident_id FK,UK "NOT NULL"
+        integer employee_id FK "NOT NULL"
+        integer rating "NOT NULL"
+        text comment
+        datetime created_at "NOT NULL"
+    }
+    investigation_notes {
+        integer id PK
+        integer incident_id FK "NOT NULL"
+        integer author_id FK
+        varchar(30) note_type "NOT NULL"
+        text body "NOT NULL"
+        boolean is_internal "NOT NULL"
+        datetime created_at "NOT NULL"
+    }
+    notifications {
+        integer id PK
+        integer recipient_id FK "NOT NULL"
+        integer incident_id FK
+        varchar(20) channel "NOT NULL"
+        varchar(200) subject "NOT NULL"
+        text body "NOT NULL"
+        varchar(60) event_type
+        boolean is_read "NOT NULL"
+        varchar(20) delivery_status "NOT NULL"
+        datetime created_at "NOT NULL"
+    }
+    resolutions {
+        integer id PK
+        integer incident_id FK,UK "NOT NULL"
+        integer technician_id FK "NOT NULL"
+        text summary "NOT NULL"
+        text root_cause "NOT NULL"
+        datetime created_at "NOT NULL"
+    }
+    sla_violations {
+        integer id PK
+        integer incident_id FK "NOT NULL"
+        varchar(20) sla_type "NOT NULL"
+        datetime deadline_at "NOT NULL"
+        datetime detected_at "NOT NULL"
+    }
+    technician_skills {
+        integer technician_id PK,FK
+        integer category_id PK,FK
+        integer proficiency "NOT NULL"
+    }
+    services |o--o{ sla_policies : "service_id"
+    users |o--o{ support_teams : "lead_id"
+    users ||--o{ incidents : "reporter_id"
+    incident_categories |o--o{ incidents : "category_id"
+    services ||--o{ incidents : "service_id"
+    users |o--o{ incidents : "assigned_technician_id"
+    sla_policies |o--o{ incidents : "sla_policy_id"
+    incidents |o--o{ incidents : "duplicate_of_id"
+    users ||--|| technician_profiles : "user_id"
+    support_teams |o--o{ technician_profiles : "team_id"
+    users |o--o{ audit_logs : "actor_id"
+    incidents |o--o{ audit_logs : "incident_id"
+    incidents ||--|| employee_feedback : "incident_id"
+    users ||--o{ employee_feedback : "employee_id"
+    incidents ||--o{ investigation_notes : "incident_id"
+    users |o--o{ investigation_notes : "author_id"
+    users ||--o{ notifications : "recipient_id"
+    incidents |o--o{ notifications : "incident_id"
+    incidents ||--|| resolutions : "incident_id"
+    users ||--o{ resolutions : "technician_id"
+    incidents ||--o{ sla_violations : "incident_id"
+    technician_profiles ||--o{ technician_skills : "technician_id"
+    incident_categories ||--o{ technician_skills : "category_id"
