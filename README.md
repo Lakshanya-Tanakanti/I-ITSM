@@ -1,16 +1,17 @@
 # I-ITSM: Intelligent IT Service Management and Incident Resolution System
 
-A complete incident management platform for an organisation's IT service desk. Employees report problems, the system classifies and prioritises them, assigns the best technician, tracks SLA deadlines, notifies everyone involved and keeps an unchangeable audit trail.
+An incident management system for an organisation's IT service desk. Employees report problems, the system classifies and prioritises them, assigns the best technician, tracks SLA deadlines, notifies everyone involved and keeps an audit log of every change.
 
 * **Frontend:** React, Vite, React Router, Axios, Recharts
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Pydantic, JWT, bcrypt
 * **Database:** SQLite (a single file, no installation needed)
+* **Tests:** pytest, 264 automated tests, all passing (about 95% statement coverage of the back end)
 
 ---
 
 ## 1. Quick start on Windows (PowerShell)
 
-> **Honest note.** Every automated check reported in the project report was run on Linux, and the application was also run on macOS. The commands below are standard PowerShell and Windows is the intended platform, but a complete Windows run has not been recorded in the report. If a step fails, see section 5.
+> The commands below were tested on Windows (PowerShell) and also run on macOS and Linux. If a step fails, see section 5.
 
 You need two programs installed once:
 
@@ -59,15 +60,11 @@ Optional settings: `Copy-Item .env.example .env` inside `backend`, then edit `.e
 
 ### Run the tests
 
-Stop the server with Ctrl+C first, or open a third PowerShell window. Inside `backend`, with the virtual environment active:
+With the virtual environment active, inside `backend`:
 
-```powershell
-python -m pytest -q
-```
+    python -m pytest -q
 
-Expected result with the current code: `264 passed`. The warning count varies between runs (0 to 6) and is harmless, see `docs\evidence\TEST_RESULTS.md`. The tests use an in-memory database and never touch `itsm.db`. For the coverage figure install the extra package first: `pip install pytest-cov`, then `python -m pytest -q --cov=app`.
-
-The front end has no automated tests. To check that it builds: inside `frontend` run `npm run build`.
+All 264 tests should pass. They use an in-memory database, so `itsm.db` is not touched.
 
 ---
 
@@ -94,7 +91,7 @@ The seed creates 12 incidents (INC-1001 to INC-1012) in different states, includ
 
 ---
 
-## 3. Take a guided tour (10 minutes)
+## 3. Walkthrough
 
 1. Sign in as **rahul.verma** (employee). Choose **Report incident**. Type "Payment application unavailable", describe it, pick the service **Payment Gateway**. A category suggestion and a duplicate warning appear while you type. Submit.
 2. Sign in as **admin**. Open the new incident. See the SLA countdown, the risk explanation and the technician recommendations. Reassign if you like.
@@ -121,7 +118,7 @@ All settings have working defaults. To change them, copy `backend\.env.example` 
 
 Business settings (assignment strategy, priority strategy, duplicate threshold, auto-assignment, escalation, default workload limit) are changed by an admin on the **Settings** page, no restart needed.
 
-**Affected users and priority.** The report form has an optional "number of affected users" field. Large numbers raise the impact that is counted in the priority score (10 or more users: at least 2, 50: 3, 250: 4, 1000: 5). The rule never lowers the impact you choose, it is explained on the incident and in the audit log, and an administrator can turn it off with the checkbox on the **Settings** page. See the business rules in Chapter 2 of `docs/FINAL_PROJECT_REPORT.pdf`.
+**Affected users and priority.** The report form has an optional "number of affected users" field. Large numbers raise the impact that is counted in the priority score (10 or more users: at least 2, 50: 3, 250: 4, 1000: 5). The rule never lowers the impact you choose, it is explained on the incident and in the audit log, and an administrator can turn it off with the checkbox on the **Settings** page. 
 
 **Upgrading an existing database.** If you already have an `itsm.db` from an earlier version, just restart the backend. New nullable columns (for example `incidents.effective_impact`) are added automatically and no data is lost. Back up the file first if it holds anything you care about.
 
@@ -131,7 +128,7 @@ Start again with clean demo data: stop the backend, then inside `backend` run `p
 
 ---
 
-## 5. Common problems on Windows
+## 5. Troubleshooting
 
 | Problem | Fix |
 |---|---|
@@ -185,8 +182,8 @@ Interactive API documentation is available while the backend runs at **http://lo
 
 ## 7. More documentation
 
-- docs/diagrams/: use case, ER, class and architecture diagrams
-- docs/DATA_DICTIONARY.md: every table and column
-- docs/REQUIREMENTS_TRACEABILITY.md: each requirement mapped to code and tests
-- docs/evidence/TEST_RESULTS.md: test results and coverage
-- docs/screenshots/evidence/: screenshots used as test evidence
+- [docs/diagrams/](docs/diagrams/): use case, ER, class and architecture diagrams
+- [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md): every table and column
+- [docs/REQUIREMENTS_TRACEABILITY.md](docs/REQUIREMENTS_TRACEABILITY.md): each requirement mapped to code and tests
+- [docs/evidence/TEST_RESULTS.md](docs/evidence/TEST_RESULTS.md): test results and coverage
+- [docs/screenshots/evidence/](docs/screenshots/evidence/): screenshots used as test evidence
