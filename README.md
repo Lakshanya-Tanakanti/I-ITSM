@@ -5,7 +5,7 @@ An incident management system for an organisation's IT service desk. Employees r
 * **Frontend:** React, Vite, React Router, Axios, Recharts
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Pydantic, JWT, bcrypt
 * **Database:** SQLite (a single file, no installation needed)
-* **Tests:** pytest, 264 automated tests, all passing (about 95% statement coverage of the back end)
+* **Tests:** pytest, 270 automated back-end tests, all passing (95.1% statement coverage of the back end), plus 8 front-end unit tests (`npm test`)
 
 ---
 
@@ -64,7 +64,11 @@ With the virtual environment active, inside `backend`:
 
     python -m pytest -q
 
-All 264 tests should pass. They use an in-memory database, so `itsm.db` is not touched.
+All 270 tests should pass. They use an in-memory database, so `itsm.db` is not touched.
+
+Front-end unit tests (error and network-failure messages), inside `frontend`:
+
+    npm test
 
 ---
 
@@ -165,7 +169,7 @@ I-ITSM/
       routes/            HTTP endpoints (thin)
       middleware/        Auth dependencies and error handlers
       utils/             Security, text analysis, demo seed
-    tests/               264 pytest tests (14 files)
+    tests/               270 pytest tests (15 files)
     requirements.txt
   frontend/
     src/pages/           One file per screen

@@ -447,3 +447,11 @@ All figures below were checked on 2026-11-19 by collecting and running the suite
 | Warnings 5 versus 6 (and 0, 1) | Evidence and report | The count is nondeterministic. Unclosed in-memory SQLite connections are reported as `ResourceWarning` only when the garbage collector releases them while pytest is recording, which depends on timing and on whether coverage tracing is on. A `StarletteDeprecationWarning` appears only where `httpx2` is not installed | Same code, observed runs: system Python 3.13 with `httpx2`, with coverage: 5 warnings; system Python, no coverage, two runs: 0 warnings; fresh virtual environment from `requirements.txt`, with coverage: 6 warnings; the same environment without coverage, two runs: 1 warning; older pinned versions (FastAPI 0.162.7, SQLAlchemy 2.1.8, Pydantic 2.14.3) with 261 tests: 1 warning |
 
 The reference figure is therefore: **264 collected, 264 passed, 0 failed, 0 skipped, 94.8 percent statement coverage, and 0 to 6 harmless warnings depending on environment and run.** No run produced a failure or an error.
+
+
+## Update of 2026-11-21
+
+* New file `backend/tests/test_failure_handling.py` (6 tests): real SQLite failure gives 503 DATABASE_ERROR, a database failure during creation rolls the whole incident back, other SQLAlchemy errors give 500 DATABASE_ERROR, integrity errors give 409 CONFLICT, `/health` reports `database: false`, and unexpected errors give a generic 500 without internals.
+* Full suite on 2026-11-21 (Linux, Python 3.13): **270 collected, 270 passed, 0 failed, 0 skipped**, 95.1 percent statement coverage (3,669 statements, 181 not executed). The unchanged 264-test suite measured the same day gave 94.7 percent (195 not executed); the 94.8 percent of 2026-11-19 differs by three statements in timing-dependent code.
+* Front end: `frontend/src/services/errors.js` now treats a proxy or gateway answer without the API's JSON body (for example the Vite proxy's empty HTTP 500 when the back end is stopped) as a network failure. `npm test` runs 8 unit tests (8 passed).
+* TC-29 executed on 2026-11-21 with `docs/tools/e2e_tc29_network_failure.mjs` in headless Chrome: with the back end stopped, and then with the front-end server stopped as well, the login page showed "Cannot reach the server. Is the backend running on port 8000?" and stayed usable (screenshots SS-29a and SS-29b).

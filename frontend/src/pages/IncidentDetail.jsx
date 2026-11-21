@@ -45,7 +45,7 @@ function AssignPanel({ inc, onDone }) {
           {r.eligible.map((t) => (
             <div key={t.technician_id} className="note">
               <div className="row between"><div><b>#{t.rank} {t.name}</b> <span className="muted small">{t.team}</span></div><span className="badge b-indigo">Score {t.score}</span></div>
-              <ul className="small muted" style={{ margin: "4px 0 8px 16px", padding: 0 }}>{t.reasons.map((x, i) => <li key={i}>{x}</li>)}<li>Workload {t.factors.workload}/{t.factors.workload_limit}</li></ul>
+              <ul className="small muted" style={{ margin: "4px 0 8px 16px", padding: 0 }}>{t.reasons.map((x, i) => <li key={i}>{x}</li>)}</ul>
               {t.technician_id === inc.assigned_technician?.id ? <span className="badge b-green">Currently assigned</span> : <button className="btn sm primary" disabled={busy} onClick={() => setPick({ id: t.technician_id, name: t.name, ov: false })}><UserCheck size={14} />Assign</button>}
             </div>
           ))}
