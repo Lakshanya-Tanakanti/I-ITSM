@@ -71,14 +71,14 @@ Each test is assigned to categories from the HTTP status codes and exception typ
 
 Files below 85 percent: `app/utils/seed.py` (59%), `app/observers/base.py` (71%), `app/services/config_service.py` (79%), `app/middleware/errors.py` (83%), `app/services/user_service.py` (84%). `utils/seed.py` is demo-data generation and the start-up path, which the bootstrap tests only partly exercise. `config_service.py` and `user_service.py` have unexercised update and error branches that are covered indirectly by the API tests but not individually.
 
-## 5. Not covered by automated tests (stated honestly)
+## 5. Not covered by automated tests
 
-* **Frontend.** There is no automated UI test suite. A scripted browser walkthrough was run by hand (login, report, assign, acknowledge, investigate, information request and reply, resolve, verify, feedback, close, override assignment), and the production build was checked (section 6). See `MANUAL_TASKS.md` for the manual UI test script the group should run and screenshot.
-* **Load and concurrency.** Not tested. SQLite and a single process are assumed.
+* **Frontend.** There is no automated UI test suite. A scripted browser walkthrough was run once (login, report, assign, acknowledge, investigate, information request and reply, resolve, verify, feedback, close, override assignment), and the production build was checked (section 6).
+* **Load and concurrency.** Not tested. The system assumes SQLite and a single process.
 * **Real e-mail.** Delivery is simulated by design.
-* **Browser compatibility.** Only Chromium was used.
-* **Long passwords.** bcrypt uses the first 72 bytes only. The app truncates explicitly, so two passwords that differ only after byte 72 are treated as equal. This is a known bcrypt property, documented in the requirements specification (NFR-SEC-02).
-* **Test warnings.** The warning count is not stable between runs (0 to 6 were observed, see section 8). It consists of `ResourceWarning: unclosed database` messages from in-memory SQLite connections that are released by garbage collection, plus a `StarletteDeprecationWarning` when only `httpx` and not `httpx2` is installed. None comes from application code.
+* **Browsers.** Only Chromium was used.
+* **Long passwords.** bcrypt uses only the first 72 bytes, so two passwords that differ only after byte 72 are treated as equal. The app truncates explicitly. This is a known bcrypt property.
+* **Test warnings.** The warning count changes between runs (0 to 6 were seen, see section 8). They are `ResourceWarning: unclosed database` messages from in-memory SQLite connections that garbage collection releases, plus a `StarletteDeprecationWarning` when only `httpx` and not `httpx2` is installed. None of them comes from the application code.
 
 ## 6. Fresh-install verification
 
