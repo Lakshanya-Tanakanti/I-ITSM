@@ -176,7 +176,7 @@ I-ITSM/
     src/context/         Auth and toast state
     src/services/api.js  Axios client with token handling
   database/              schema.sql (generated from the models) and sample_data.sql (demo rows)
-  docs/                  Final report (PDF and Markdown), diagrams, traceability, test evidence, archive
+  docs/                  Diagrams, traceability, test evidence, archive
 ```
 
 Interactive API documentation is available while the backend runs at **http://localhost:8000/docs**.
