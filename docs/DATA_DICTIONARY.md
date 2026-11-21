@@ -1,6 +1,6 @@
 # Data dictionary
 
-Generated from the SQLAlchemy models by `docs/tools/generate_diagrams.py`. Do not edit by hand.
+Every table and column in the database. The entity class for each table is in `backend/app/models/`.
 
 ## incident_categories
 
