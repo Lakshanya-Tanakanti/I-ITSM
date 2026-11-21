@@ -2,7 +2,7 @@
 
 Test files are in `backend/tests/`. "UI" names the frontend page in `frontend/src/pages/` (or component) that exposes the feature. Every row below was checked against the code, and the test column names real tests that run in the suite (`python -m pytest -q`, the current count is in `evidence/TEST_RESULTS.md`).
 
-The documented test cases TC-01 to TC-30 (the format required by the assignment, with actual results and the automated test behind each) are in Chapter 6, Table 6.4 of `FINAL_PROJECT_REPORT.pdf`. The table below maps the earlier acceptance scenarios T01 to T30.
+The table in section 1 maps the acceptance scenarios T01 to T30 to the tests that cover them.
 
 ## 1. Acceptance scenarios T01 to T30
 
@@ -13,7 +13,7 @@ The documented test cases TC-01 to TC-30 (the format required by the assignment,
 | T03 | Wrong password gives 401, no token | `test_auth.py::test_t03_login_with_wrong_password_returns_401_without_token` | `routes/auth.py` |
 | T04 | Employee cannot read another's incident | `test_rbac.py::test_t04_employee_cannot_read_another_employees_incident` | `incident_service.can_view`, `get_for_actor` |
 | T05 | Impact 4, urgency 5, criticality 5 gives 100, P1 | `test_priority.py::test_t05_impact4_urgency5_criticality5_is_score_100_p1` | `strategies/priority.py` |
-| T06 | Boundary 39 is P2 | `test_priority.py::test_t06_t07_threshold_boundaries` (report Section 4.7) | `PriorityStrategy.level_for_score` |
+| T06 | Boundary 39 is P2 | `test_priority.py::test_t06_t07_threshold_boundaries` | `PriorityStrategy.level_for_score` |
 | T07 | Boundary 8 is P3 | same test | same |
 | T08 | NEW to CLOSED rejected 409, no mutation | `test_lifecycle.py::test_t08_new_to_closed_is_rejected_with_409_and_no_mutation` | `domain/lifecycle.py` |
 | T09 | Technician acknowledges, timestamp set | `test_lifecycle.py::test_t09_assigned_technician_acknowledges_and_timestamp_is_set` | `incident_service.transition` |
@@ -83,28 +83,8 @@ The documented test cases TC-01 to TC-30 (the format required by the assignment,
 | BR-15 | Audit append-only | ORM listeners (`models/audit.py`); optional triggers in `database/schema.sql` | `test_t22`, `test_audit_rows_are_immutable_at_orm_level` |
 | BR-16 | Large user counts can raise the counted impact, never lower it; admin can switch the rule off | `AffectedUsersPolicy`, `incident_service._effective_impact`, setting `affected_users_adjustment` | `test_affected_users.py` (26 tests) |
 
-## 4. Assignment document coverage
+## 4. Known gaps
 
-| Assignment requirement | Where |
-|---|---|
-| Lifecycle Report, Classify, Prioritize, Assign, Investigate, Resolve, Verify, Close | Section 4.10 of the final report, `domain/lifecycle.py` |
-| Role specific functions (employee, technician, admin) | RBAC tests, role navigation in `layouts/AppLayout.jsx` |
-| SLA tracking and violations | `sla_service.py`, SLA monitor screen |
-| Notifications | `observers/` |
-| Search and reporting | Incident list, Reports |
-| Intelligent features | `intelligence_service.py` |
-| OOP principles | final report Section 4.12 |
-| Design patterns Strategy, Observer, State, Repository (Factory, DI and unit of work as extras) | final report Sections 4.7 to 4.10 |
-| Exception handling list (invalid login, unauthorised, invalid incident, invalid transition, technician unavailable, workload exceeded, service not found, missing SLA configuration, duplicate, database failure, network failure, invalid input) | `domain/exceptions.py`, `middleware/errors.py`; network failure is handled in the UI by `errMsg` in `services/api.js` |
-| Technology selection report | final report Section 3.3 |
-| Diagrams | `docs/diagrams/` (use case, ER, 7 class views, architecture; generated and verified, see Section 6.4 of the final report), starter files `docs/architecture.drawio`, `docs/class_diagram.drawio` |
-| Problem analysis | final report Chapters 1 and 2 |
-| Requirements specification | final report Chapter 2 |
-| Testing report | `evidence/TEST_RESULTS.md` |
-| Final report structure | `FINAL_PROJECT_REPORT.md` |
-
-## 5. Known gaps
-
-* No automated frontend test suite. The UI was exercised by a scripted browser walkthrough only (see Section 6.5 of the final report).
+* No automated frontend test suite. The UI was checked by hand in the browser.
 * E-mail is simulated by design, there is no real SMTP delivery.
-* The system targets a single organisation and SQLite. See the scalability section of the technology report for the upgrade path.
+* The system targets a single organisation and SQLite. Moving to a server database such as PostgreSQL would be the next step for larger use.
