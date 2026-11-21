@@ -1,6 +1,6 @@
 # Diagrams
 
-All files are generated and verified, verified by `../tools/verify_diagrams.py` (see Section 6.4 of the final report). Use the `.png` in documents and the `.svg` when you need to zoom. Do not edit them by hand, change the generator and run it again.
+All files are generated and verified, verified by `../tools/verify_diagrams.py`. Use the `.png` in documents and the `.svg` when you need to zoom. Do not edit them by hand, change the generator and run it again.
 
 | File | What it shows |
 |---|---|
