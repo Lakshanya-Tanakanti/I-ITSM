@@ -48,7 +48,7 @@ Open **http://localhost:5173** and sign in with a demo account from section 2.
 
 ### Initialise or reset the database (demo data)
 
-The database is created automatically on the first start. When it is empty, the start-up code fills it with the demo data in section 2 (12 incidents, 10 users, 8 services, 5 SLA policies). You do not have to do anything. To wipe everything and seed again, stop the backend (Ctrl+C), then inside `backend` with the virtual environment active:
+The database is created automatically on the first start. When it is empty, the start-up code fills it with the demo data in section 2 (12 incidents, 10 users, 8 services, 5 SLA policies). To wipe everything and seed again, stop the backend (Ctrl+C), then inside `backend` with the virtual environment active:
 
 ```powershell
 python -m app.utils.seed --reset
