@@ -1,11 +1,13 @@
 # I-ITSM: Intelligent IT Service Management and Incident Resolution System
 
+[![Tests](https://github.com/Lakshanya-Tanakanti/I-ITSM/actions/workflows/tests.yml/badge.svg)](https://github.com/Lakshanya-Tanakanti/I-ITSM/actions/workflows/tests.yml)
+
 An incident management system for an organisation's IT service desk. Employees report problems, the system classifies and prioritises them, assigns the best technician, tracks SLA deadlines, notifies everyone involved and keeps an audit log of every change.
 
 * **Frontend:** React, Vite, React Router, Axios, Recharts
 * **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Pydantic, JWT, bcrypt
 * **Database:** SQLite (a single file, no installation needed)
-* **Tests:** pytest, 270 automated back-end tests, all passing (95.1% statement coverage of the back end), plus 8 front-end unit tests (`npm test`)
+* **Tests:** pytest, 270 automated back-end tests, all passing (95.1% statement coverage of the back end), plus 8 front-end unit tests (`npm test`); all run automatically on GitHub Actions on every push (`.github/workflows/tests.yml`)
 
 ---
 
